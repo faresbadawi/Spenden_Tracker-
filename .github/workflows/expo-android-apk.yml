@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write   # for Release upload
+      contents: write
 
     env:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
@@ -24,18 +24,34 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
-      - name: Install dependencies
+      - name: Enable Corepack (for Yarn/PNPM if used)
+        run: corepack enable
+
+      - name: Install dependencies (npm/yarn/pnpm auto-detect)
         run: |
-          npm ci
+          if [ -f yarn.lock ]; then
+            echo "Using Yarn (yarn.lock found)"
+            yarn --version
+            yarn install --immutable
+          elif [ -f pnpm-lock.yaml ]; then
+            echo "Using PNPM (pnpm-lock.yaml found)"
+            pnpm --version || corepack prepare pnpm@latest --activate
+            pnpm install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            echo "Using npm ci (package-lock.json found)"
+            npm ci
+          else
+            echo "No lockfile found -> using npm install"
+            npm install --no-audit --no-fund
+          fi
 
       - name: Install EAS CLI
-        run: |
-          npm i -g eas-cli
+        run: npm i -g eas-cli
 
       - name: Verify Expo Auth
-        run: |
-          eas whoami || exit 1
+        run: eas whoami || exit 1
 
       - name: EAS Build Android (APK)
         run: |
