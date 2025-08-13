@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "spenden-tracker",
-    "slug": "snack-a5be6eb8-c4af-476c-8595-b66386599ebe",
+    "slug": "spenden-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,9 +13,12 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.faresbadawi.spendentracker"
     },
     "android": {
+      "package": "com.faresbadawi.spendentracker",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -24,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "sdkVersion": "53.0.0",
+    "platforms": ["ios", "android"]
   }
 }
