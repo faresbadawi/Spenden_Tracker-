@@ -25,10 +25,13 @@
       },
       "edgeToEdgeEnabled": true
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
+    "web": { "favicon": "./assets/favicon.png" },
     "sdkVersion": "53.0.0",
-    "platforms": ["ios", "android"]
+    "platforms": ["ios","android"],
+    "extra": {
+      "eas": {
+        "projectId": "PASTE-DEINE-EAS-PROJECT-ID-HIER"   // <- wichtig
+      }
+    }
   }
 }
