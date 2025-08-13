@@ -1,0 +1,65 @@
+name: Build Android APK (Expo EAS)
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # for Release upload
+
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Install EAS CLI
+        run: |
+          npm i -g eas-cli
+
+      - name: Verify Expo Auth
+        run: |
+          eas whoami || exit 1
+
+      - name: EAS Build Android (APK)
+        run: |
+          eas build --platform android --profile production --non-interactive --wait --json > build-result.json
+
+      - name: Download APK from EAS
+        run: |
+          node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('build-result.json','utf8'));if(!Array.isArray(j)||!j[0]?.artifacts?.buildUrl){console.error('No buildUrl in JSON');process.exit(1)}console.log('URL:',j[0].artifacts.buildUrl)"
+          node -e "const fs=require('fs');const https=require('https');const url=JSON.parse(fs.readFileSync('build-result.json','utf8'))[0].artifacts.buildUrl;const f=require('fs').createWriteStream('app-android.apk');https.get(url,res=>{if(res.statusCode>=300&&res.statusCode<400&&res.headers.location){https.get(res.headers.location,r=>r.pipe(f))}else{res.pipe(f)}})"
+          sleep 10
+          ls -lh app-android.apk
+
+      - name: Upload artifact (APK)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-android
+          path: app-android.apk
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            app-android.apk
+          generate_release_notes: true
