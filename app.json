@@ -2,7 +2,7 @@
   "expo": {
     "name": "spenden-tracker",
     "slug": "spendentracker-",
-    "owner": "deinOwnerOptional",
+    "owner": "fares.fsm",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
