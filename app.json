@@ -2,6 +2,7 @@
   "expo": {
     "name": "spenden-tracker",
     "slug": "spendentracker-",
+    "owner": "deinOwnerOptional",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,7 +28,7 @@
     },
     "web": { "favicon": "./assets/favicon.png" },
     "sdkVersion": "53.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": ["ios","android"],
     "extra": {
       "eas": {
         "projectId": "b768949f-74ff-4135-93d6-f2e5d35ecc79"
